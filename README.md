@@ -1,50 +1,143 @@
-# Welcome to your Expo app 👋
+# FinanceFusion Mobile App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A comprehensive mobile application for personal finance management with modern features and robust security.
 
-## Get started
+## Features
 
-1. Install dependencies
+- **Authentication**
+  - Email/Password login
+  - Biometric authentication
+  - Password reset
+  - Email verification
+  - Secure session management
 
-   ```bash
-   npm install
-   ```
+- **User Profile**
+  - Profile picture upload
+  - Display name management
+  - Profile information editing
 
-2. Start the app
+- **Data Management**
+  - Offline support
+  - Automatic sync when online
+  - Data persistence
+  - Secure storage
 
-   ```bash
-    npx expo start
-   ```
+- **Analytics & Monitoring**
+  - Error tracking with Sentry
+  - User behavior analytics
+  - Performance monitoring
+  - Crash reporting
 
-In the output, you'll find options to open the app in a
+- **Testing**
+  - Unit tests
+  - Integration tests
+  - Component testing
+  - Coverage reporting
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Prerequisites
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- Node.js (v14 or higher)
+- npm or yarn
+- Expo CLI
+- Firebase account
+- Sentry account
 
-## Get a fresh project
+## Installation
 
-When you're ready, run:
-
+1. Clone the repository:
 ```bash
-npm run reset-project
+git clone https://github.com/yourusername/financefusion-mobile.git
+cd financefusion-mobile
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+```
 
-## Learn more
+3. Configure environment variables:
+Create a `.env` file in the root directory with the following variables:
+```
+FIREBASE_API_KEY=your_api_key
+FIREBASE_AUTH_DOMAIN=your_auth_domain
+FIREBASE_PROJECT_ID=your_project_id
+FIREBASE_STORAGE_BUCKET=your_storage_bucket
+FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+FIREBASE_APP_ID=your_app_id
+SENTRY_DSN=your_sentry_dsn
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+4. Start the development server:
+```bash
+npm start
+# or
+yarn start
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Testing
 
-## Join the community
+Run the test suite:
+```bash
+npm test
+# or
+yarn test
+```
 
-Join our community of developers creating universal apps.
+Run tests in watch mode:
+```bash
+npm run test:watch
+# or
+yarn test:watch
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Generate coverage report:
+```bash
+npm run test:coverage
+# or
+yarn test:coverage
+```
+
+## Project Structure
+
+```
+financefusion-mobile/
+├── assets/             # Static assets
+├── components/         # Reusable components
+├── config/            # Configuration files
+├── contexts/          # React contexts
+├── hooks/             # Custom hooks
+├── screens/           # Screen components
+├── tests/             # Test files
+├── .env               # Environment variables
+├── App.js             # Main application component
+├── app.json           # Expo configuration
+├── jest.config.js     # Jest configuration
+├── jest.setup.js      # Jest setup
+└── package.json       # Dependencies and scripts
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## Security
+
+- All user data is encrypted in transit and at rest
+- Biometric authentication for enhanced security
+- Regular security audits and updates
+- Secure session management
+- Password reset functionality
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+For support, email support@financefusion.com or open an issue in the repository.
