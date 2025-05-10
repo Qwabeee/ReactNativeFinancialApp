@@ -1,14 +1,15 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import { auth } from '../config/firebase';
-import { 
+import React, { createContext, useState, useContext, useEffect } from "react";
+import { auth } from "../config/firebase";
+import { updateProfile } from "firebase/auth";
+import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
   sendPasswordResetEmail,
-  sendEmailVerification
-} from 'firebase/auth';
-import * as LocalAuthentication from 'expo-local-authentication';
+  sendEmailVerification,
+} from "firebase/auth";
+import * as LocalAuthentication from "expo-local-authentication";
 
 const AuthContext = createContext({});
 
@@ -37,19 +38,24 @@ export const AuthProvider = ({ children }) => {
   const authenticateWithBiometrics = async () => {
     try {
       const result = await LocalAuthentication.authenticateAsync({
-        promptMessage: 'Authenticate to access your account',
-        fallbackLabel: 'Use password instead',
+        promptMessage: "Authenticate to access your account",
+        fallbackLabel: "Use password instead",
       });
       return result.success;
     } catch (error) {
-      console.error('Biometric authentication error:', error);
+      console.error("Biometric authentication error:", error);
       return false;
     }
   };
 
-  const signUp = async (email, password) => {
+  const signUp = async (email, password, name) => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      await updateProfile(userCredential.user, { displayName: name });
       await sendEmailVerification(userCredential.user);
       return userCredential.user;
     } catch (error) {
@@ -62,10 +68,14 @@ export const AuthProvider = ({ children }) => {
       if (useBiometric && isBiometricAvailable) {
         const authenticated = await authenticateWithBiometrics();
         if (!authenticated) {
-          throw new Error('Biometric authentication failed');
+          throw new Error("Biometric authentication failed");
         }
       }
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       return userCredential.user;
     } catch (error) {
       throw error;
@@ -89,16 +99,16 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider 
-      value={{ 
-        user, 
-        loading, 
-        signUp, 
-        signIn, 
-        logout, 
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        signUp,
+        signIn,
+        logout,
         resetPassword,
         isBiometricAvailable,
-        authenticateWithBiometrics
+        authenticateWithBiometrics,
       }}
     >
       {!loading && children}
@@ -108,4 +118,4 @@ export const AuthProvider = ({ children }) => {
 
 export const useAuth = () => {
   return useContext(AuthContext);
-}; 
+};
