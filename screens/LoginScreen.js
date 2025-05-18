@@ -1,160 +1,98 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-  ActivityIndicator,
-} from 'react-native';
-import { useAuth } from '../contexts/AuthContext';
-import * as LocalAuthentication from 'expo-local-authentication';
+import React, { useState } from 'react';
+import { View, TextInput, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import * as SecureStore from 'expo-secure-store';
+import { useNavigation } from '@react-navigation/native';
+import app from '../firebaseConfig'; 
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const { signIn, isBiometricAvailable } = useAuth();
-
-  useEffect(() => {
-    if (isBiometricAvailable) {
-      handleBiometricLogin();
-    }
-  }, [isBiometricAvailable]);
-
-  const handleBiometricLogin = async () => {
-    try {
-      setLoading(true);
-      await signIn(email, password, true);
-    } catch (error) {
-      Alert.alert('Error', error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const navigation = useNavigation();
+  const auth = getAuth(app);
 
   const handleLogin = async () => {
     try {
-      setLoading(true);
-      await signIn(email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const uid = userCredential.user.uid;
+
+      // Save UID securely for future use
+      await SecureStore.setItemAsync('userUID', uid);
+
+      // Navigate to the main tabs after successful login
+      navigation.replace('MainTabs');
     } catch (error) {
-      Alert.alert('Error', error.message);
-    } finally {
-      setLoading(false);
+      console.log(error.message);
+      Alert.alert('Login Failed', 'Invalid email or password');
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome Back</Text>
+      <Text style={styles.title}>Login</Text>
+
       <TextInput
         style={styles.input}
         placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
         autoCapitalize="none"
         keyboardType="email-address"
+        textContentType="emailAddress"
+        autoComplete="email"
+        value={email}
+        onChangeText={setEmail}
       />
+
       <TextInput
         style={styles.input}
         placeholder="Password"
+        secureTextEntry
+        textContentType="password"
+        autoComplete="password"
         value={password}
         onChangeText={setPassword}
-        secureTextEntry
       />
-      <TouchableOpacity
-        style={[styles.button, loading && styles.buttonDisabled]}
-        onPress={handleLogin}
-        disabled={loading}
-      >
-        {loading ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text style={styles.buttonText}>Login</Text>
-        )}
-      </TouchableOpacity>
-      {isBiometricAvailable && (
-        <TouchableOpacity
-          style={styles.biometricButton}
-          onPress={handleBiometricLogin}
-        >
-          <Text style={styles.biometricButtonText}>Use Biometric Login</Text>
-        </TouchableOpacity>
-      )}
-      <TouchableOpacity
-        style={styles.linkButton}
-        onPress={() => navigation.navigate('ForgotPassword')}
-      >
-        <Text style={styles.linkText}>Forgot Password?</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.linkButton}
-        onPress={() => navigation.navigate('SignUp')}
-      >
-        <Text style={styles.linkText}>Don't have an account? Sign up</Text>
+
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Text style={styles.buttonText}>Sign In</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
+export default LoginScreen;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    padding: 20,
     backgroundColor: '#fff',
+    padding: 20,
+    justifyContent: 'center',
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
-    marginBottom: 30,
     textAlign: 'center',
+    marginBottom: 40,
+    color: '#333',
   },
   input: {
     height: 50,
+    borderColor: '#ccc',
     borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
     paddingHorizontal: 15,
-    marginBottom: 15,
+    borderRadius: 10,
+    marginBottom: 20,
     fontSize: 16,
   },
   button: {
     backgroundColor: '#007AFF',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  buttonDisabled: {
-    backgroundColor: '#ccc',
+    paddingVertical: 15,
+    borderRadius: 10,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  biometricButton: {
-    backgroundColor: '#34C759',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  biometricButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  linkButton: {
-    marginTop: 15,
-    alignItems: 'center',
-  },
-  linkText: {
-    color: '#007AFF',
-    fontSize: 14,
+    fontSize: 18,
+    textAlign: 'center',
+    fontWeight: '600',
   },
 });
-
-export default LoginScreen; 
