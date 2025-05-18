@@ -5,7 +5,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
-// Import screens
+// Screens
+import LoginScreen from './screens/LoginScreen';
 import DashboardScreen from './screens/DashboardScreen';
 import AnalyticsScreen from './screens/AnalyticsScreen';
 import GoalsScreen from './screens/GoalsScreen';
@@ -54,14 +55,11 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen 
-            name="MainTabs" 
-            component={TabNavigator} 
-            options={{ headerShown: false }}
-          />
+        <Stack.Navigator initialRouteName="Login">
+          <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="MainTabs" component={TabNavigator} options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
   );
-} 
+}
